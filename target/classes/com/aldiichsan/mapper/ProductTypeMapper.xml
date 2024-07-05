@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aldiichsan.mapper.ProductTypeMapper">
+    <select id="findById" resultType="com.aldiichsan.model.ProductTypeModel">
+        SELECT * FROM public."TR_PRODUCT_TYPE" WHERE "ID" = #{id}
+    </select>
+
+    <select id="getAllTypes" resultType="com.aldiichsan.model.ProductTypeModel">
+        SELECT * FROM public."TR_PRODUCT_TYPE"
+    </select>
+
+    <select id="countAllTypes" resultType="int">
+        SELECT COUNT(*) FROM public."TR_PRODUCT_TYPE"
+    </select>
+
+    <insert id="createNewType" parameterType="java.util.List">
+        INSERT INTO public."TR_PRODUCT_TYPE" ("TYPE")
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item})
+        </foreach>
+    </insert>
+
+    <update id="editExistingType" parameterType="com.aldiichsan.model.ProductTypeModel">
+        UPDATE public."TR_PRODUCT_TYPE" SET
+            "TYPE" = #{type}
+        WHERE "ID" = #{id}
+    </update>
+
+    <delete id="deleteOne">
+        DELETE FROM public."TR_PRODUCT_TYPE" WHERE "ID" = #{id}
+    </delete>
+</mapper>
