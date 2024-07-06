@@ -7,6 +7,14 @@
 
     <select id="getAllTypes" resultType="com.aldiichsan.model.ProductTypeModel">
         SELECT * FROM public."TR_PRODUCT_TYPE"
+        LIMIT #{size} OFFSET #{page}
+    </select>
+
+    <select id="getNewestType" resultType="com.aldiichsan.model.ProductTypeModel">
+        SELECT *
+        FROM public."TR_PRODUCT_TYPE"
+        ORDER BY "CREATED_DATE" DESC
+        LIMIT #{size}
     </select>
 
     <select id="countAllTypes" resultType="int">
@@ -14,16 +22,18 @@
     </select>
 
     <insert id="createNewType" parameterType="java.util.List">
-        INSERT INTO public."TR_PRODUCT_TYPE" ("TYPE")
+        INSERT INTO public."TR_PRODUCT_TYPE"
+            ("TYPE", "CREATED_DATE")
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item})
+            (#{item}, now())
         </foreach>
     </insert>
 
     <update id="editExistingType" parameterType="com.aldiichsan.model.ProductTypeModel">
         UPDATE public."TR_PRODUCT_TYPE" SET
-            "TYPE" = #{type}
+            "TYPE" = #{type},
+            "UPDATED_DATE" = now()
         WHERE "ID" = #{id}
     </update>
 

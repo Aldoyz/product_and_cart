@@ -10,7 +10,8 @@ import java.util.List;
 @Repository
 public interface ProductTypeMapper {
     ProductTypeModel findById(Long id);
-    List<ProductTypeModel> getAllTypes();
+    List<ProductTypeModel> getAllTypes(int size, int page);
+    List<ProductTypeModel> getNewestType(int size);
     int countAllTypes();
     void createNewType(List<String> types);
     void editExistingType(ProductTypeModel body);

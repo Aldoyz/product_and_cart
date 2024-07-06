@@ -36,10 +36,14 @@ public class MybatisProductTypeController {
 
     @GetMapping(path = "/list")
     @ApiOperation("List all available product types")
-    public ResponseEntity getAllProductTypes() {
+    public ResponseEntity getAllProductTypes(
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "1") int page
+    ) {
         int totalTypes = pts.countAllTypes();
-        List<ProductTypeModel> productTypes = pts.getAllTypes();
-        return ResponseEntity.ok().body(ApiResponse.success(HttpStatus.OK, ResponseMessage.DATA_FETCHED.getMessage(), totalTypes, productTypes));
+        long totalPage = ((long) Math.ceil(((double) totalTypes) / size));
+        List<ProductTypeModel> productTypes = pts.getAllTypes(size, (page-1) * size);
+        return ResponseEntity.ok().body(ApiResponse.success(HttpStatus.OK, ResponseMessage.DATA_FETCHED.getMessage(), totalTypes, totalPage, page, size, productTypes));
     }
 
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
