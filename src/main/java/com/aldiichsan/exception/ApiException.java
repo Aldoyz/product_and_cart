@@ -30,14 +30,26 @@ public class ApiException {
         }
     }
 
-    public static class OutOfBounds extends ArrayIndexOutOfBoundsException {
-        public OutOfBounds(String msg) {
+    public static class ArrayIndexOutOfBounds extends ArrayIndexOutOfBoundsException {
+        public ArrayIndexOutOfBounds(String msg) {
+            super(msg);
+        }
+    }
+
+    public static class IndexOutOfBounds extends IndexOutOfBoundsException {
+        public IndexOutOfBounds(String msg) {
             super(msg);
         }
     }
 
     public static class Arithmetic extends ArithmeticException {
         public Arithmetic(String msg) {
+            super(msg);
+        }
+    }
+
+    public static class Unexpected extends Exception {
+        public Unexpected(String msg) {
             super(msg);
         }
     }

@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProductUpdateModel {
-    Long id;
-    Long typeId;
-    String name;
-    Long price;
+    private Long id;
+    private Long typeId;
+    private String name;
+    private Long price;
 }

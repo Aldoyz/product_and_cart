@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aldiichsan.mapper.ShoppingCartMapper">
+
+    <select id="getCartDetails" resultType="com.aldiichsan.model.CartDetailsModel">
+        SELECT
+            TSC."ID" AS shoppingCartId,
+            TCD."ID" AS cartDetailsId,
+            TC."ID" AS customerId,
+            TC."NAME" AS customerName,
+            TC."ADDRESS",
+            TP."ID" AS productId,
+            TP."NAME" AS productName,
+            TPT."ID" AS typeId,
+            TPT."TYPE",
+            TP."PRICE",
+            TCD."QUANTITY",
+            TCD."TOTAL",
+            TS."ID" AS statusId,
+            TS."STATUS"
+        FROM "TD_SHOPPING_CART" TSC
+            JOIN "TD_CUSTOMER" TC ON TC."ID" = TSC."CUSTOMER_ID"
+            JOIN "TD_CART_DETAILS" TCD ON TCD."SHOPPING_CART_ID" = TSC."ID"
+            JOIN "TD_PRODUCT" TP ON TP."ID" = TCD."PRODUCT_ID"
+            JOIN "TR_PRODUCT_TYPE" TPT ON TPT."ID" = TP."TYPE_ID"
+            JOIN "TR_STATUS" TS ON TS."ID" = TCD."STATUS_ID"
+        WHERE TC."ID" = #{customerId}
+    </select>
+
+    <select id="getShoppingCart" resultType="com.aldiichsan.model.ShoppingCartModel">
+        SELECT * FROM "TD_SHOPPING_CART"
+        WHERE "CUSTOMER_ID" = #{customerId}
+    </select>
+
+    <insert id="addItemToCart" parameterType="com.aldiichsan.model.CartDetailsInsertModel">
+        INSERT INTO "TD_CART_DETAILS"
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shoppingCartId != null or shoppingCartId != 0">"SHOPPING_CART_ID",</if>
+            <if test="productId != null or productId != 0">"PRODUCT_ID",</if>
+            <if test="quantity != null or quantity != 0">"QUANTITY",</if>
+            <if test="total != null or total != 0">"TOTAL",</if>
+            <if test="statusId != null or statusId != 0">"STATUS_ID",</if>
+            "CREATED_DATE",
+            "UPDATED_DATE"
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shoppingCartId != null or shoppingCartId != 0">#{shoppingCartId},</if>
+            <if test="productId != null or productId != 0">#{productId},</if>
+            <if test="quantity != null or quantity != 0">#{quantity},</if>
+            <if test="total != null or total != 0">#{total},</if>
+            <if test="statusId != null or statusId != 0">#{statusId},</if>
+            NOW(),
+            NOW()
+        </trim>
+    </insert>
+
+    <insert id="addCustomerDetail" parameterType="com.aldiichsan.model.CustomerModel">
+        INSERT INTO "TD_CUSTOMER"
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null or name != ''">"NAME",</if>
+            <if test="address != null or address != ''">"ADDRESS",</if>
+            "CREATED_DATE",
+            "UPDATED_DATE"
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null or name != ''">#{name},</if>
+            <if test="address != null or address != ''">#{address},</if>
+            NOW(),
+            NOW()
+        </trim>
+        ON CONFLICT ("ID") DO
+        UPDATE SET
+            "NAME" = EXCLUDED."NAME",
+            "ADDRESS" = EXCLUDED."ADDRESS",
+            "UPDATED_DATE" = NOW()
+    </insert>
+
+    <select id="getCustomerDetail" resultType="com.aldiichsan.model.CustomerModel">
+        SELECT * FROM "TD_CUSTOMER"
+        ORDER BY "UPDATED_DATE" DESC
+        LIMIT 1
+    </select>
+
+    <insert id="checkOutCart" parameterType="com.aldiichsan.model.ShoppingCartModel">
+        INSERT INTO "TD_SHOPPING_CART"
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null or customerId != 0">"CUSTOMER_ID",</if>
+            <if test="overallTotal != null or overallTotal != 0">"OVERALL_TOTAL",</if>
+            "CREATED_DATE",
+            "UPDATED_DATE"
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null or customerId != 0">#{customerId},</if>
+            <if test="overallTotal != null or overallTotal != 0">#{overallTotal},</if>
+            NOW(),
+            NOW()
+        </trim>
+        ON CONFLICT ("ID") DO
+        UPDATE SET
+            "OVERALL_TOTAL" = EXCLUDED."OVERALL_TOTAL",
+            "UPDATED_DATE" = NOW()
+    </insert>
+
+    <update id="updateCartDetailsStatus" parameterType="java.lang.Long">
+        UPDATE "TD_CART_DETAILS" SET
+            "STATUS_ID" = 2,
+            "UPDATED_DATE" = now()
+        WHERE "ID" = #{id}
+    </update>
+
+    <delete id="deleteOneItem">
+        DELETE FROM "TD_CART_DETAILS"
+        WHERE "ID" = #{id}
+    </delete>
+</mapper>

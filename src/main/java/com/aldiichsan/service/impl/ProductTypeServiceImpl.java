@@ -1,15 +1,12 @@
 package com.aldiichsan.service.impl;
 
-import com.aldiichsan.exception.AlreadyExistsException;
 import com.aldiichsan.exception.ApiExceptionHandling;
 import com.aldiichsan.mapper.ProductTypeMapper;
 import com.aldiichsan.model.ProductTypeModel;
 import com.aldiichsan.service.ProductTypeService;
-import com.aldiichsan.util.ResponseMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,11 +41,9 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         try {
             productTypeMapper.createNewType(types);
             return productTypeMapper.getNewestType(types.size());
-        } catch (DuplicateKeyException e) {
-            throw new AlreadyExistsException(ResponseMessage.DATA_ALREADY_EXISTS.getMessage());
-        } catch (Exception e){
-            log.error("Error when updating a class.", e);
-            throw e;
+        } catch (Exception e) {
+            apiExceptionHandling.ExceptionHandling(e);
+            return null;
         }
     }
 
@@ -57,11 +52,9 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         try {
             productTypeMapper.editExistingType(body);
             return productTypeMapper.findById(body.getId());
-        } catch (DuplicateKeyException e) {
-            throw new AlreadyExistsException(ResponseMessage.DATA_ALREADY_EXISTS.getMessage());
-        } catch (Exception e){
-            log.error("Error when updating a class.", e);
-            throw e;
+        } catch (Exception e) {
+            apiExceptionHandling.ExceptionHandling(e);
+            return null;
         }
 
     }

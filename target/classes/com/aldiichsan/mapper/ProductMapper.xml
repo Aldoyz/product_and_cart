@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aldiichsan.mapper.ProductMapper">
+    <select id="findById" resultType="com.aldiichsan.model.ProductModel">
+        SELECT * FROM public."TD_PRODUCT" WHERE "ID" = #{id}
+    </select>
+
+    <select id="getAllProduct" resultType="com.aldiichsan.model.ProductModel">
+        SELECT
+               TP."ID",
+               TPT."TYPE",
+               TP."NAME",
+               TP."PRICE"
+        FROM public."TD_PRODUCT" AS TP
+            JOIN public."TR_PRODUCT_TYPE" AS TPT ON TP."TYPE_ID" = TPT."ID"
+        LIMIT #{size} OFFSET #{page}
+    </select>
+
+    <select id="getNewestProduct" resultType="com.aldiichsan.model.ProductModel">
+        SELECT
+            TP."ID",
+            TPT."TYPE",
+            TP."NAME",
+            TP."PRICE"
+        FROM public."TD_PRODUCT" AS TP
+                 JOIN public."TR_PRODUCT_TYPE" AS TPT ON TP."TYPE_ID" = TPT."ID"
+        ORDER BY TP."CREATED_DATE" DESC
+        LIMIT 1
+    </select>
+
+    <select id="countAllProduct" resultType="int">
+        SELECT COUNT(*) FROM public."TD_PRODUCT"
+    </select>
+
+    <insert id="createNewProduct" parameterType="com.aldiichsan.model.ProductInsertModel">
+        INSERT INTO public."TD_PRODUCT"
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeId != null or typeId != 0">"TYPE_ID",</if>
+            <if test="name != null or name != ''">"NAME",</if>
+            <if test="price != null or price != 0">"PRICE",</if>
+            "CREATED_DATE"
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeId != null or typeId != 0">#{typeId},</if>
+            <if test="name != null or name != ''">#{name},</if>
+            <if test="price != null or price != 0">#{price},</if>
+            now()
+        </trim>
+    </insert>
+
+    <update id="editExistingProduct" parameterType="com.aldiichsan.model.ProductInsertModel">
+        UPDATE public."TD_PRODUCT" SET
+        <trim suffixOverrides=",">
+            <if test="typeId != null or typeId != 0">"TYPE_ID" = #{typeId},</if>
+            <if test="name != null or name != ''">"NAME" = #{name},</if>
+            <if test="price != null or price != 0">"PRICE" = #{price},</if>
+            "UPDATED_DATE" = now()
+        </trim>
+        WHERE "ID" = #{id}
+    </update>
+
+    <delete id="deleteOne">
+        DELETE FROM public."TD_PRODUCT" WHERE "ID" = #{id}
+    </delete>
+</mapper>

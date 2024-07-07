@@ -40,8 +40,20 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(ex, status);
     }
 
-    @ExceptionHandler(value = ApiException.OutOfBounds.class)
-    public ResponseEntity<Object> handleOutOfBoundsException(ApiException.OutOfBounds e) {
+    @ExceptionHandler(value = ApiException.ArrayIndexOutOfBounds.class)
+    public ResponseEntity<Object> handleOutOfBoundsException(ApiException.ArrayIndexOutOfBounds e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        ApiException ex = new ApiException(
+                status,
+                formattedTimestamp,
+                e.getMessage()
+        );
+        return new ResponseEntity<>(ex, status);
+    }
+
+    @ExceptionHandler(value = ApiException.IndexOutOfBounds.class)
+    public ResponseEntity<Object> handleOutOfBoundsException(ApiException.IndexOutOfBounds e) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         ApiException ex = new ApiException(

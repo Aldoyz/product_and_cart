@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProductInsertModel {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    Long id;
-    Long typeId;
-    String name;
-    Long price;
+    private Long id;
+    private Long typeId;
+    private String name;
+    private Long price;
 }

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProductTypeModel {
-    Long id;
-    String type;
+    private Long id;
+    private String type;
 }
